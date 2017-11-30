@@ -7,6 +7,7 @@ var STATUS_COLUMN = 'B';
 var START_OF_ITERATION_STRING = 'current';
 var END_OF_ITERATION_STRING = 'next';
 var ACCESS_TOKEN = ''; // Required, ask someone.
+var RATE_LIMIT = 1000;
 
 /*
  * Object of repoIds: 
@@ -16,7 +17,7 @@ var ACCESS_TOKEN = ''; // Required, ask someone.
  *   'ORG/REPO3': '213'
  * }
 */
-var REPO_IDS = {}; 
+var REPO_IDS = {};
 // Stop editing
 
 var baseUrl = 'https://api.zenhub.io';
@@ -24,6 +25,8 @@ var apiToken = '?access_token=' + ACCESS_TOKEN;
 
 var startOfIteration = 1;
 var endOfIteration = 2;
+
+var epics = {};
 
 function onOpen() {
   var spreadsheet = SpreadsheetApp.getActive();
@@ -79,7 +82,7 @@ function getEpicData(repoId, epicId, index) {
   var response = UrlFetchApp.fetch(url, {'muteHttpExceptions': true});
   response = JSON.parse(response);
   var total = response.total_epic_estimates.value;
-  var complete = sum(getIssues(response.issues));
+  var complete = sum(getIssues([], response.issues));
   SpreadsheetApp.getActiveSheet().getRange(TOTAL_COLUMN + index).setValue(total);
   SpreadsheetApp.getActiveSheet().getRange(DONE_COLUMN + index).setValue(complete);
   if (complete === total) {
@@ -87,12 +90,17 @@ function getEpicData(repoId, epicId, index) {
   }
 }
 
-function getIssues(issues) {
-  var newIssues = [];
-  for (var i = 0, ii = issues.length; i < ii; i += 1) {
-    newIssues.push(getIssueData(issues[i].repo_id, issues[i].issue_number));
+function getIssues(epicIssues, issues) {
+  var issue = issues.shift();
+  
+  epicIssues.push(getIssueData(issue.repo_id, issue.issue_number));
+  
+  if (issues.length > 0) {
+    Utilities.sleep(RATE_LIMIT);
+    return getIssues(epicIssues, issues);
+  } else {
+   return epicIssues; 
   }
-  return newIssues;
 }
 
 function getIssueData(repoId, issueId) {
