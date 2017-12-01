@@ -7,7 +7,7 @@ var STATUS_COLUMN = 'B';
 var START_OF_ITERATION_STRING = 'current';
 var END_OF_ITERATION_STRING = 'next';
 var ACCESS_TOKEN = ''; // Required, ask someone.
-var RATE_LIMIT = 1000;
+var RATE_LIMIT = 606;
 
 /*
  * Object of repoIds: 
@@ -25,8 +25,6 @@ var apiToken = '?access_token=' + ACCESS_TOKEN;
 
 var startOfIteration = 1;
 var endOfIteration = 2;
-
-var epics = {};
 
 function onOpen() {
   var spreadsheet = SpreadsheetApp.getActive();
@@ -99,7 +97,7 @@ function getIssues(epicIssues, issues) {
     Utilities.sleep(RATE_LIMIT);
     return getIssues(epicIssues, issues);
   } else {
-   return epicIssues; 
+    return epicIssues; 
   }
 }
 
