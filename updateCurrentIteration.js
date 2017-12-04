@@ -43,7 +43,8 @@ function findCurrentIteration() {
      startOfIteration = i; 
     }
     if (iteration.indexOf(END_OF_ITERATION_STRING) !== -1) {
-     endOfIteration = i; 
+     endOfIteration = i;
+     break;
     }
   }
 }
