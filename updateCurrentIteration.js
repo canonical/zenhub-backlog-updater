@@ -77,6 +77,8 @@ function updateEpicEstimates() {
 }
 
 function getEpicData(repoId, epicId, index) {
+  SpreadsheetApp.getActiveSheet().getRange(TOTAL_COLUMN + index).setBackground('#f99b11');
+  SpreadsheetApp.getActiveSheet().getRange(DONE_COLUMN + index).setBackground('#f99b11');
   var url = baseUrl + '/p1/repositories/' + repoId + '/epics/' + epicId + apiToken;
   var response = UrlFetchApp.fetch(url, {'muteHttpExceptions': true});
   response = JSON.parse(response);
@@ -87,6 +89,8 @@ function getEpicData(repoId, epicId, index) {
   if (complete === total) {
     SpreadsheetApp.getActiveSheet().getRange(STATUS_COLUMN + index).setValue('Complete');
   }
+  SpreadsheetApp.getActiveSheet().getRange(TOTAL_COLUMN + index).setBackground('#ffffff');
+  SpreadsheetApp.getActiveSheet().getRange(DONE_COLUMN + index).setBackground('#ffffff');
 }
 
 function getIssues(epicIssues, issues) {
