@@ -10,7 +10,7 @@ var ACCESS_TOKEN = ''; // Required, ask someone.
 var RATE_LIMIT = 606;
 
 /*
- * Object of repoIds: 
+ * Object of repoIds:
  * {
  *   'ORG/REPO': '123',
  *   'ORG/REPO2': '321',
@@ -40,7 +40,7 @@ function findCurrentIteration() {
   for (var i = 1; i < lastActiveRow; i++) {
     var iteration = activeSheet.getRange(EPIC_NAME_COLUMN + i).getValue().toLowerCase();
     if (iteration.indexOf(START_OF_ITERATION_STRING) !== -1) {
-     startOfIteration = i; 
+     startOfIteration = i;
     }
     if (iteration.indexOf(END_OF_ITERATION_STRING) !== -1) {
      endOfIteration = i;
@@ -86,7 +86,7 @@ function getEpicData(repoId, epicId, index) {
   var complete = sum(getIssues([], response.issues));
   SpreadsheetApp.getActiveSheet().getRange(TOTAL_COLUMN + index).setValue(total);
   SpreadsheetApp.getActiveSheet().getRange(DONE_COLUMN + index).setValue(complete);
-  if (complete === total) {
+  if (complete === total && total !== 0) {
     SpreadsheetApp.getActiveSheet().getRange(STATUS_COLUMN + index).setValue('Complete');
   }
   SpreadsheetApp.getActiveSheet().getRange(TOTAL_COLUMN + index).setBackground('#ffffff');
@@ -95,14 +95,14 @@ function getEpicData(repoId, epicId, index) {
 
 function getIssues(epicIssues, issues) {
   var issue = issues.shift();
-  
+
   epicIssues.push(getIssueData(issue.repo_id, issue.issue_number));
-  
+
   if (issues.length > 0) {
     Utilities.sleep(RATE_LIMIT);
     return getIssues(epicIssues, issues);
   } else {
-    return epicIssues; 
+    return epicIssues;
   }
 }
 
