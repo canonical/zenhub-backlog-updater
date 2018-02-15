@@ -86,8 +86,16 @@ function getEpicData(repoId, epicId, index) {
   var complete = sum(getIssues([], response.issues));
   SpreadsheetApp.getActiveSheet().getRange(TOTAL_COLUMN + index).setValue(total);
   SpreadsheetApp.getActiveSheet().getRange(DONE_COLUMN + index).setValue(complete);
-  if (complete === total && total !== 0) {
-    SpreadsheetApp.getActiveSheet().getRange(STATUS_COLUMN + index).setValue('Complete');
+  if (total) {
+    SpreadsheetApp
+      .getActiveSheet()
+      .getRange(PROGRESS_COLUMN + index)
+      .setFormula('rept("|", SUM(' + DONE_COLUMN + index + '/' + TOTAL_COLUMN + index + '*100))');
+    if (total === complete){
+      SpreadsheetApp.getActiveSheet().getRange(STATUS_COLUMN + index).setValue('Done');
+    }
+  } else {
+    SpreadsheetApp.getActiveSheet().getRange(PROGRESS_COLUMN + index).clearContent();
   }
   SpreadsheetApp.getActiveSheet().getRange(TOTAL_COLUMN + index).setBackground('#ffffff');
   SpreadsheetApp.getActiveSheet().getRange(DONE_COLUMN + index).setBackground('#ffffff');
