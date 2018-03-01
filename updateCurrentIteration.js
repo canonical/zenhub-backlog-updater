@@ -79,8 +79,10 @@ function getEpicData(repoId, epicId, index) {
 
 function getIssues(epicIssues, issues) {
   var issue = issues.shift();
-
-  epicIssues.push(getIssueData(issue.repo_id, issue.issue_number));
+  
+  if (issue.repo_id && issue.issue_number) {
+    epicIssues.push(getIssueData(issue.repo_id, issue.issue_number));
+  }
   if (issues.length > 0) {
     Utilities.sleep(RATE_LIMIT);
     return getIssues(epicIssues, issues);
