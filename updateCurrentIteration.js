@@ -80,7 +80,7 @@ function getEpicData(repoId, epicId, index) {
 function getIssues(epicIssues, issues) {
   var issue = issues.shift();
   
-  if (issue.repo_id && issue.issue_number) {
+  if (issue && issue.repo_id && issue.issue_number) {
     epicIssues.push(getIssueData(issue.repo_id, issue.issue_number));
   }
   if (issues.length > 0) {
