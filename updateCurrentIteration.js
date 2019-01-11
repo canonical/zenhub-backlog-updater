@@ -25,6 +25,24 @@ function findCurrentIteration() {
   }
 }
 
+/* 
+ * Fixes zenhub links in the form of:
+ * https://app.zenhub.com/workspaces/snap-squad-593688b45aa7c527b96f9401/issues/canonicalltd/snap-squad/817
+ * To be:
+ * https://github.com/canonicalltd/snap-squad/issues/817
+ */
+function zenhubIsNotGithub(cell) {
+  var link = cell.getFormula().match(/=hyperlink\("([^"]+)"/i)[1];
+  var newLink = link;
+  if (newLink.indexOf("app.zenhub") !== -1) {
+    newLink = newLink.split("issues/")[1];
+    var lastSlash = newLink.lastIndexOf("/");
+    newLink = "https://github.com/" + newLink.substr(0, lastSlash) + "/issues" + newLink.substr(lastSlash);
+
+    cell.setFormula(formula.replace(link, newLink))
+  }
+}
+
 function updateEpicEstimates() {
   findCurrentIteration();
   SpreadsheetApp
@@ -39,10 +57,11 @@ function updateEpicEstimates() {
     if (SpreadsheetApp.getActiveSheet().getRange(EPIC_LINK_COLUMN + i).getValue() === '') {
       continue;
     }
+    zenhubIsNotGithub(SpreadsheetApp.getActiveSheet().getRange(EPIC_LINK_COLUMN + i));
     var cellFormula = SpreadsheetApp.getActiveSheet().getRange(EPIC_LINK_COLUMN + i).getFormula();
     var link = cellFormula.match(/=hyperlink\("([^"]+)"/i)[1];
-    var link = link.replace('https://github.com/', '');
-    var link = link.replace('https://app.zenhub.com/workspace/o/','');
+    link = link.replace('https://github.com/', '');
+    link = link.replace('https://app.zenhub.com/workspace/o/','');
     var linkFragments = link.split('/issues/');
     var repo = REPO_IDS[linkFragments[0]]
     var id = linkFragments[1]
