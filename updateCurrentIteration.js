@@ -63,7 +63,7 @@ function updateEpicEstimates() {
     link = link.replace('https://github.com/', '');
     link = link.replace('https://app.zenhub.com/workspace/o/','');
     var linkFragments = link.split('/issues/');
-    var repo = REPO_IDS[linkFragments[0]]
+    var repo = REPO_IDS[linkFragments[0].toLowerCase()]
     var id = linkFragments[1]
     if(repo) {
       getEpicData(repo, id, i);
@@ -87,7 +87,7 @@ function getEpicData(repoId, epicId, index) {
       .getRange(PROGRESS_COLUMN + index)
       .setFormula('rept("|", SUM(' + DONE_COLUMN + index + '/' + TOTAL_COLUMN + index + '*100))');
     if (total === complete){
-      SpreadsheetApp.getActiveSheet().getRange(STATUS_COLUMN + index).setValue('Done');
+      SpreadsheetApp.getActiveSheet().getRange(STATUS_COLUMN + index).setValue('Completed');
     }
   } else {
     SpreadsheetApp.getActiveSheet().getRange(PROGRESS_COLUMN + index).clearContent();
