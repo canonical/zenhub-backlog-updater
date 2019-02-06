@@ -11,12 +11,13 @@ var ACCESS_TOKEN = ''; // Required, ask someone.
 var RATE_LIMIT = 606;
 
 /*
- * Object of repoIds:
+ * Object of repoIds: 
  * {
- *   'ORG/REPO': '123',
- *   'ORG/REPO2': '321',
- *   'ORG/REPO3': '213'
+ *   'org/repo': '123',
+ *   'org/repo2': '321',
+ *   'org/repo3': '213'
  * }
+ * ENSURE THE KEY IS lowercase
 */
 var REPO_IDS = {};
 // Stop editing
